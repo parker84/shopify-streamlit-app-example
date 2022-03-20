@@ -68,6 +68,16 @@ class ShopifyStoreClient():
             return None
         # The myshopify_domain value is the one we'll need to listen to via webhooks to determine an uninstall
         return shop_response['shop']
+    
+    def get_orders(self, last_id) -> dict:
+        method = 'GET'
+        shop_response = self.authenticated_shopify_call(
+            call_path=f"orders.json?limit=250&since_id={last_id}", 
+            method=method
+        )
+        if not shop_response:
+            return None
+        return shop_response
 
     def get_script_tags(self) -> List:
         call_path = 'script_tags.json'

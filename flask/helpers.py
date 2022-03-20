@@ -8,6 +8,9 @@ import hmac
 import base64
 import hashlib
 from flask import request, abort
+import pandas as pd
+import re
+from shopify_client import ShopifyStoreClient
 
 from dotenv import load_dotenv
 
@@ -79,3 +82,17 @@ def is_valid_shop(shop: str) -> bool:
     # Shopify docs give regex with protocol required, but shop never includes protocol
     shopname_regex = r'[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com[\/]?'
     return re.match(shopname_regex, shop)
+
+
+def get_all_orders(store_client: ShopifyStoreClient):
+    # motivated by here: https://towardsdatascience.com/how-to-get-all-orders-from-shopify-69db163c7a2d
+    last=0
+    orders=pd.DataFrame()
+    while True:
+        response = store_client.get_orders(last)
+        df=pd.DataFrame(response.json()['orders'])
+        orders=pd.concat([orders,df])
+        last=df['id'].iloc[-1]
+        if len(df)<250:
+            break
+    return orders

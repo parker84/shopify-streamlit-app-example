@@ -75,6 +75,23 @@ Once it's up and running be sure to add the url to that dashboard into your envi
 heroku config:set DASHBOARD_REDIRECT_URL=https://shoplit-dash.herokuapp.com
 ```
 
+### Step 4: Get your DB setup and start retrieving order data
+
+Add a free postgres database onto this application through the heroku add-ons options. 
+
+**Caution**: to actually productionize this data storage we recommend using a more robust approach (ex: a cron job that runs once a day) and you'll need to setup the ability to delete the data once you've retrieved it.
+
+Set your db parameters as environmental variables in heroku
+```sh
+heroku config:set DB_HOST=db_host
+heroku config:set DB=db_name
+heroku config:set DB_USER=db_user_name
+heroku config:set DB_PWD=db_password
+# port is assumed to be 5432
+```
+
+Once setting your db parameters, you'll start downloading the store's order data.
+
 ## Understanding Each Component
 For more details on each component see here: https://github.com/garettB/shopify-flask-example#serverpy
 

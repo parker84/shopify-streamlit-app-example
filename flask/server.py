@@ -9,9 +9,16 @@ import helpers
 from shopify_client import ShopifyStoreClient
 
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
 load_dotenv()
 WEBHOOK_APP_UNINSTALL_URL = os.environ.get('WEBHOOK_APP_UNINSTALL_URL')
+if os.environ.get('DB_HOST') is not None:
+    ENGINE_PATH = f"postgresql://{os.environ.get('DB_USER')}:{os.environ.get('DB_PWD')}@{os.environ.get('DB_HOST')}/{os.environ.get('DB')}"
+    engine = create_engine(ENGINE_PATH)
+    conn = engine.connect()
+else:
+    ENGINE_PATH = None
 print('webhook', WEBHOOK_APP_UNINSTALL_URL)
 
 
@@ -34,6 +41,10 @@ def app_launched():
 
     if ACCESS_TOKEN:
         redirect_url = helpers.generate_dash_redirect_url(shop=shop, nonce=NONCE)
+        if ENGINE_PATH is not None: # => let's store the order data
+            shopify_client = ShopifyStoreClient(shop=shop, access_token=ACCESS_TOKEN)
+            order_df = helpers.get_all_orders(shopify_client)
+            order_df.to_sql(name=f'orders_{shop}', con=conn)
         return redirect(redirect_url, code=200)
 
     redirect_url = helpers.generate_install_redirect_url(shop=shop, scopes=SCOPES, nonce=NONCE, access_mode=ACCESS_MODE)
