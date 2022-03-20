@@ -7,8 +7,7 @@ This repos is forked from [garettB/shopify-flask-example](https://github.com/gar
 
 This repo will create the server-side component for your Shopify app + the ability to pass a user to a streamlit dashboard for their shop and provide you some basic tools which you can build on to create a robust commercial application.
 
-<img width="1449" alt="image" src="https://user-images.githubusercontent.com/12496987/159172778-ef01974f-fc60-49ee-bb0a-9e18b6105f26.png">
-
+<img width="1452" alt="image" src="https://user-images.githubusercontent.com/12496987/159180082-d40d6fd8-4748-4529-b907-b2f0cf1076a4.png">
 
 ## Setup
 
