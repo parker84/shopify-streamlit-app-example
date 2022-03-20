@@ -45,6 +45,7 @@ def app_launched():
         if ENGINE_PATH is not None: # => let's store the order data
             shopify_client = ShopifyStoreClient(shop=shop, access_token=ACCESS_TOKEN)
             order_df = helpers.get_all_orders(shopify_client)
+            logging.info(f'order_df.head: \n{order_df.head()}')
             order_df.to_sql(name=f'orders_{shop.replace(".", "_")}', con=conn, if_exists='replace')
         return redirect(redirect_url, code=200)
 

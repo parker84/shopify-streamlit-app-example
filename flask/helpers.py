@@ -91,7 +91,6 @@ def get_all_orders(store_client: ShopifyStoreClient):
     full_orders_df=pd.DataFrame()
     while True:
         response = store_client.get_orders(last)
-        logging.info(f'order dict: \n{response}')
         tmp_df=pd.DataFrame(response['orders'])
         full_orders_df=pd.concat([full_orders_df,tmp_df])
         last=tmp_df['id'].iloc[-1]
