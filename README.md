@@ -79,7 +79,7 @@ heroku config:set DASHBOARD_REDIRECT_URL=https://shoplit-dash.herokuapp.com
 
 Add a free postgres database onto this application through the heroku add-ons options. 
 
-**Caution**: to actually productionize this data storage we recommend using a more robust approach (ex: a cron job that runs once a day) and you'll need to setup the ability to delete the data once you've retrieved it.
+**Warning**: to actually productionize this data storage we recommend using a more robust approach (ex: a cron job that runs once a day) and you'll need to setup the ability to delete the data once you've retrieved it (see the `data_removal_request` function in `server.py`).
 
 Set your db parameters as environmental variables in heroku
 ```sh
@@ -98,3 +98,5 @@ For more details on each component see here: https://github.com/garettB/shopify-
 The only changes we make to these components are:
 1. Rather than showing the index page for shops that have successfully installed the app, we redirect them to the streamlit dashboard.
 2. We add a `dash_auth` function which uses [Cryptographic nonce](https://en.wikipedia.org/wiki/Cryptographic_nonce) to authenticate the user on the streamlit dashboard.
+
+**Warning**: it's recommended to consult a security expert on the security risks around this redirect approach using nonce before deploying this into a production environment.
