@@ -29,6 +29,7 @@ ACCESS_TOKEN = None
 NONCE = None
 ACCESS_MODE = []  # Defaults to offline access mode if left blank or omitted. https://shopify.dev/concepts/about-apis/authentication#api-access-modes
 SCOPES = ['write_script_tags', 'read_orders']  # https://shopify.dev/docs/admin-api/access-scopes
+# Note: read_orders is only orders in last 60 days, for full orders you need to request access in your app settings
 
 
 @app.route('/app_launched', methods=['GET'])

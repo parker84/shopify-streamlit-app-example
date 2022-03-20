@@ -88,15 +88,15 @@ def is_valid_shop(shop: str) -> bool:
 def get_all_orders(store_client: ShopifyStoreClient):
     # motivated by here: https://towardsdatascience.com/how-to-get-all-orders-from-shopify-69db163c7a2d
     last=0
-    full_orders_df=pd.DataFrame()
+    orders_df=pd.DataFrame()
     while True:
         response = store_client.get_orders(last)
         tmp_df=pd.DataFrame(response['orders'])
-        full_orders_df=pd.concat([full_orders_df,tmp_df])
+        orders_df=pd.concat([orders_df,tmp_df])
         last=tmp_df['id'].iloc[-1]
         if len(tmp_df)<250:
             break
-    for col in full_orders_df.columns:
-        if not (isinstance(full_orders_df[col].iloc[0], float) or isinstance(full_orders_df[col].iloc[0], int)):
-            full_orders_df[col] = list(map(lambda x: json.dumps(x), full_orders_df[col])) # grabbed from here: https://stackoverflow.com/questions/56808425/sqlalchemy-psycopg2-programmingerror-cant-adapt-type-dict
-    return full_orders_df
+    for col in orders_df.columns:
+        if not (isinstance(orders_df[col].iloc[0], float) or isinstance(orders_df[col].iloc[0], int)):
+            orders_df[col] = list(map(lambda x: json.dumps(x), orders_df[col])) # grabbed from here: https://stackoverflow.com/questions/56808425/sqlalchemy-psycopg2-programmingerror-cant-adapt-type-dict
+    return orders_df
