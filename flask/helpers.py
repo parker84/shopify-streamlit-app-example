@@ -90,7 +90,8 @@ def get_all_orders(store_client: ShopifyStoreClient):
     orders=pd.DataFrame()
     while True:
         response = store_client.get_orders(last)
-        df=pd.DataFrame(response.json()['orders'])
+        logging.info(f'order dict: \n{response}')
+        df=pd.DataFrame(response['orders'])
         orders=pd.concat([orders,df])
         last=df['id'].iloc[-1]
         if len(df)<250:
