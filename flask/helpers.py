@@ -6,6 +6,7 @@ import os
 import re
 import hmac
 import base64
+import json
 import hashlib
 from flask import request, abort
 import pandas as pd
@@ -87,13 +88,16 @@ def is_valid_shop(shop: str) -> bool:
 def get_all_orders(store_client: ShopifyStoreClient):
     # motivated by here: https://towardsdatascience.com/how-to-get-all-orders-from-shopify-69db163c7a2d
     last=0
-    orders=pd.DataFrame()
+    full_orders_df=pd.DataFrame()
     while True:
         response = store_client.get_orders(last)
         logging.info(f'order dict: \n{response}')
-        df=pd.DataFrame(response['orders'])
-        orders=pd.concat([orders,df])
-        last=df['id'].iloc[-1]
-        if len(df)<250:
+        tmp_df=pd.DataFrame(response['orders'])
+        full_orders_df=pd.concat([full_orders_df,tmp_df])
+        last=tmp_df['id'].iloc[-1]
+        if len(tmp_df)<250:
             break
-    return orders
+    for col in full_orders_df.columns:
+        if isinstance(full_orders_df[col].iloc[0], dict):
+            full_orders_df[col] = full_orders_df[col].apply(json.dumps) # grabbed from here: https://stackoverflow.com/questions/56808425/sqlalchemy-psycopg2-programmingerror-cant-adapt-type-dict
+    return full_orders_df
