@@ -48,8 +48,6 @@ cp ./flask/.env.template ./flask/.env
 https://{{store_name}}.myshopify.com/admin/apps/{{app_name}}/app_launched
 ```
 
-For more details on each component see [here](https://github.com/garettB/shopify-flask-example#serverpy).
-
 ### Step 2: Get the App Running On Heroku
 Install the heroku command line: https://devcenter.heroku.com/categories/command-line
 
@@ -70,3 +68,10 @@ heroku config:set SHOPIFY_API_KEY=<your_api_key>
 
 ### Step 3: Get your Streamlit Dashboard Running on Heroku
 See details here: https://github.com/parker84/shopify-streamlit-dashboard
+
+## Understanding Each Component
+For more details on each component see here: https://github.com/garettB/shopify-flask-example#serverpy
+
+The only changes we make to these components are:
+1. Rather than showing the index page for shops that have successfully installed the app, we redirect them to the streamlit dashboard.
+2. We add a `dash_auth` function which uses [Cryptographic nonce](https://en.wikipedia.org/wiki/Cryptographic_nonce) to authenticate the user on the streamlit dashboard.
