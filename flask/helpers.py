@@ -15,6 +15,7 @@ load_dotenv()
 SHOPIFY_SECRET = os.environ.get('SHOPIFY_SECRET')
 SHOPIFY_API_KEY = os.environ.get('SHOPIFY_API_KEY')
 INSTALL_REDIRECT_URL = os.environ.get('INSTALL_REDIRECT_URL')
+DASHBOARD_REDIRECT_URL = os.environ.get('DASHBOARD_REDIRECT_URL')
 APP_NAME = os.environ.get('APP_NAME')
 
 def generate_install_redirect_url(shop: str, scopes: List, nonce: str, access_mode: List):
@@ -24,7 +25,7 @@ def generate_install_redirect_url(shop: str, scopes: List, nonce: str, access_mo
     return redirect_url
 
 def generate_dash_redirect_url(shop: str, nonce: str):
-    redirect_url = f"https://shoplit-dash.herokuapp.com/?shop={shop}&state={nonce}"
+    redirect_url = f"{DASHBOARD_REDIRECT_URL}/?shop={shop}&state={nonce}"
     return redirect_url
 
 def generate_post_install_redirect_url(shop: str):
