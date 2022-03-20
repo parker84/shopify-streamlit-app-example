@@ -27,7 +27,7 @@ app = Flask(__name__)
 ACCESS_TOKEN = None
 NONCE = None
 ACCESS_MODE = []  # Defaults to offline access mode if left blank or omitted. https://shopify.dev/concepts/about-apis/authentication#api-access-modes
-SCOPES = ['write_script_tags', 'read_all_orders']  # https://shopify.dev/docs/admin-api/access-scopes
+SCOPES = ['write_script_tags', 'read_all_orders', 'read_orders', 'write_orders']  # https://shopify.dev/docs/admin-api/access-scopes
 
 
 @app.route('/app_launched', methods=['GET'])
