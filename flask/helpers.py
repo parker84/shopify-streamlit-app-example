@@ -97,6 +97,6 @@ def get_all_orders(store_client: ShopifyStoreClient):
         if len(tmp_df)<250:
             break
     for col in full_orders_df.columns:
-        if isinstance(full_orders_df[col].iloc[0], dict):
+        if not (isinstance(full_orders_df[col].iloc[0], float), isinstance(full_orders_df[col].iloc[0], int)):
             full_orders_df[col] = full_orders_df[col].apply(json.dumps) # grabbed from here: https://stackoverflow.com/questions/56808425/sqlalchemy-psycopg2-programmingerror-cant-adapt-type-dict
     return full_orders_df
