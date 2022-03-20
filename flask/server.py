@@ -1,3 +1,4 @@
+from dataclasses import replace
 import uuid
 import os
 import json
@@ -44,7 +45,7 @@ def app_launched():
         if ENGINE_PATH is not None: # => let's store the order data
             shopify_client = ShopifyStoreClient(shop=shop, access_token=ACCESS_TOKEN)
             order_df = helpers.get_all_orders(shopify_client)
-            order_df.to_sql(name=f'orders_{shop}', con=conn)
+            order_df.to_sql(name=f'orders_{shop.replace(".", "_")}', con=conn, if_exists='replace')
         return redirect(redirect_url, code=200)
 
     redirect_url = helpers.generate_install_redirect_url(shop=shop, scopes=SCOPES, nonce=NONCE, access_mode=ACCESS_MODE)
