@@ -1,3 +1,4 @@
+from dataclasses import replace
 import uuid
 import os
 import json
@@ -9,9 +10,16 @@ import helpers
 from shopify_client import ShopifyStoreClient
 
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
 load_dotenv()
 WEBHOOK_APP_UNINSTALL_URL = os.environ.get('WEBHOOK_APP_UNINSTALL_URL')
+if os.environ.get('DB_HOST') is not None:
+    ENGINE_PATH = f"postgresql://{os.environ.get('DB_USER')}:{os.environ.get('DB_PWD')}@{os.environ.get('DB_HOST')}/{os.environ.get('DB')}"
+    engine = create_engine(ENGINE_PATH)
+    conn = engine.connect()
+else:
+    ENGINE_PATH = None
 print('webhook', WEBHOOK_APP_UNINSTALL_URL)
 
 
@@ -20,7 +28,8 @@ app = Flask(__name__)
 ACCESS_TOKEN = None
 NONCE = None
 ACCESS_MODE = []  # Defaults to offline access mode if left blank or omitted. https://shopify.dev/concepts/about-apis/authentication#api-access-modes
-SCOPES = ['write_script_tags']  # https://shopify.dev/docs/admin-api/access-scopes
+SCOPES = ['write_script_tags', 'read_orders']  # https://shopify.dev/docs/admin-api/access-scopes
+# Note: read_orders is only orders in last 60 days, for full orders you need to request access in your app settings
 
 
 @app.route('/app_launched', methods=['GET'])
@@ -34,6 +43,11 @@ def app_launched():
 
     if ACCESS_TOKEN:
         redirect_url = helpers.generate_dash_redirect_url(shop=shop, nonce=NONCE)
+        if ENGINE_PATH is not None: # => let's store the order data
+            shopify_client = ShopifyStoreClient(shop=shop, access_token=ACCESS_TOKEN)
+            order_df = helpers.get_all_orders(shopify_client)
+            logging.info(f'order_df.head: \n{order_df.head()}')
+            order_df.to_sql(name=f'orders_{shop.replace(".", "_")}', con=conn, if_exists='replace')
         return redirect(redirect_url, code=200)
 
     redirect_url = helpers.generate_install_redirect_url(shop=shop, scopes=SCOPES, nonce=NONCE, access_mode=ACCESS_MODE)

@@ -6,8 +6,12 @@ import os
 import re
 import hmac
 import base64
+import json
 import hashlib
 from flask import request, abort
+import pandas as pd
+import re
+from shopify_client import ShopifyStoreClient
 
 from dotenv import load_dotenv
 
@@ -79,3 +83,20 @@ def is_valid_shop(shop: str) -> bool:
     # Shopify docs give regex with protocol required, but shop never includes protocol
     shopname_regex = r'[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com[\/]?'
     return re.match(shopname_regex, shop)
+
+
+def get_all_orders(store_client: ShopifyStoreClient):
+    # motivated by here: https://towardsdatascience.com/how-to-get-all-orders-from-shopify-69db163c7a2d
+    last=0
+    orders_df=pd.DataFrame()
+    while True:
+        response = store_client.get_orders(last)
+        tmp_df=pd.DataFrame(response['orders'])
+        orders_df=pd.concat([orders_df,tmp_df])
+        last=tmp_df['id'].iloc[-1]
+        if len(tmp_df)<250:
+            break
+    for col in orders_df.columns:
+        if not (isinstance(orders_df[col].iloc[0], float) or isinstance(orders_df[col].iloc[0], int)):
+            orders_df[col] = list(map(lambda x: json.dumps(x), orders_df[col])) # grabbed from here: https://stackoverflow.com/questions/56808425/sqlalchemy-psycopg2-programmingerror-cant-adapt-type-dict
+    return orders_df
