@@ -68,6 +68,11 @@ heroku config:set SHOPIFY_API_KEY=<your_api_key>
 
 ### Step 3: Get your Streamlit Dashboard Running on Heroku
 See details here: https://github.com/parker84/shopify-streamlit-dashboard
+Once it's up and running be sure to add the url to that dashboard into your environmental variables for this app
+```sh
+# example:
+heroku config:set DASHBOARD_REDIRECT_URL=https://shoplit-dash.herokuapp.com
+```
 
 ## Understanding Each Component
 For more details on each component see here: https://github.com/garettB/shopify-flask-example#serverpy
