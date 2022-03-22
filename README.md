@@ -1,7 +1,7 @@
 
 # A Simple Streamlit/Flask Shopify App
 
-This repos is forked from [garettB/shopify-flask-example](https://github.com/garettB/shopify-flask-example) and adds a streamlit dashboard onto the Shopify App.
+This repo is forked from [garettB/shopify-flask-example](https://github.com/garettB/shopify-flask-example) and adds a streamlit dashboard onto that flask Shopify App.
 
 ## What does this repo do?
 
